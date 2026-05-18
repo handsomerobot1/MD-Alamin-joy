@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Md Alamin Joy | Handsome Robot - Android & Web Developer Portfolio, live Play Store apps, GitHub projects">
+  <title>Handsome Robot | Md Alamin Joy | 3D Cosmic Forge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #02040c;
+      color: #f0f3ff;
+      line-height: 1.5;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    .space-bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      background: radial-gradient(ellipse at 30% 40%, #0a0b2a, #010003);
+    }
+
+    .stars-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+      background-image: 
+        radial-gradient(2px 2px at 15% 20%, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 45% 65%, #ffe6b3, rgba(0,0,0,0)),
+        radial-gradient(3px 1px at 70% 30%, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 88% 70%, #cbd5ff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 22% 85%, #ffd3b5, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 54% 12%, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 92% 40%, #c084fc, rgba(0,0,0,0)),
+        radial-gradient(1px 2px at 38% 50%, #a0e7ff, rgba(0,0,0,0));
+      background-repeat: no-repeat;
+      background-size: 300px 300px, 400px 400px, 250px 250px, 450px 450px, 320px 320px, 280px 280px, 360px 360px, 500px 500px;
+      opacity: 0.9;
+      animation: starDrift 40s linear infinite;
+    }
+
+    @keyframes starDrift {
+      0% { transform: translateX(0px) translateY(0px);}
+      100% { transform: translateX(-40px) translateY(-30px);}
+    }
+
+    .nebula-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(circle at 70% 20%, rgba(90, 50, 200, 0.25), transparent 60%),
+                  radial-gradient(circle at 20% 80%, rgba(220, 80, 180, 0.2), transparent 70%);
+      pointer-events: none;
+      animation: nebulaPulse 14s infinite alternate;
+    }
+    @keyframes nebulaPulse {
+      0% { opacity: 0.4; }
+      100% { opacity: 0.9; }
+    }
+
+    .shooting-star {
+      position: fixed;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(90deg, #fff, transparent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ffffff;
+      animation: shootLinear 8s linear infinite;
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .shooting-star:nth-child(1) { top: 15%; left: 10%; animation-duration: 6s; animation-delay: 0s; }
+    .shooting-star:nth-child(2) { top: 45%; left: 75%; animation-duration: 9s; animation-delay: 2s; }
+    .shooting-star:nth-child(3) { top: 70%; left: 25%; animation-duration: 7s; animation-delay: 4s; }
+    .shooting-star:nth-child(4) { top: 85%; left: 85%; animation-duration: 11s; animation-delay: 1s; }
+    .shooting-star:nth-child(5) { top: 30%; left: 60%; animation-duration: 5s; animation-delay: 7s; }
+    @keyframes shootLinear {
+      0% { transform: translateX(0) translateY(0); opacity: 0; width: 2px; }
+      10% { opacity: 1; width: 4px; }
+      40% { transform: translateX(220px) translateY(140px); opacity: 0.9; width: 3px; }
+      100% { transform: translateX(480px) translateY(280px); opacity: 0; width: 0px; }
+    }
+
+    #three-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      display: block;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 15;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0b1a; }
+    ::-webkit-scrollbar-thumb { background: #6a4eff; border-radius: 12px; }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 0 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(140, 110, 255, 0.35);
+      backdrop-filter: blur(12px);
+      background: rgba(8, 10, 28, 0.35);
+      border-radius: 0 0 32px 32px;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #E5DCFF, #B59EFF, #D28CFF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: #dfe2ff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.25s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, #b28eff, #5a3eff);
+      transition: 0.3s;
+    }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover { color: #ffffff; text-shadow: 0 0 6px #a07eff; }
+
+    .btn {
+      display: inline-block;
+      background: rgba(30, 25, 70, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(134, 106, 255, 0.7);
+      padding: 0.7rem 1.7rem;
+      border-radius: 48px;
+      font-weight: 600;
+      text-decoration: none;
+      color: white;
+      transition: 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+    }
+    .btn-primary {
+      background: linear-gradient(95deg, #6f51ff, #b158ff);
+      border: none;
+      box-shadow: 0 6px 16px rgba(98, 70, 234, 0.5);
+    }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 14px 28px rgba(108, 80, 255, 0.6); }
+    .btn-outline-light:hover { background: rgba(140, 110, 255, 0.2); border-color: #c5a9ff; transform: translateY(-3px); }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 3rem;
+      padding: 4rem 0 5rem;
+    }
+    .hero-content {
+      flex: 1;
+    }
+    .hero-badge {
+      background: rgba(100, 70, 255, 0.35);
+      backdrop-filter: blur(4px);
+      display: inline-block;
+      padding: 0.3rem 1.2rem;
+      border-radius: 60px;
+      font-size: 0.8rem;
+      border-left: 3px solid #b38eff;
+      margin-bottom: 1rem;
+    }
+    .hero-content h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(125deg, #FFFFFF, #CFBDFF, #C482FF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin: 0.5rem 0;
+    }
+    .hero-content p {
+      font-size: 1.2rem;
+      color: #cdd6ff;
+      margin: 1rem 0 1.8rem;
+      max-width: 550px;
+    }
+    .profile-frame {
+      width: 280px;
+      height: 280px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #916eff, #ce7eff);
+      padding: 4px;
+      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.6, 1.1);
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+      cursor: pointer;
+    }
+    .profile-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,245,0.5);
+      display: block;
+    }
+    .profile-frame:hover {
+      transform: scale(1.02);
+      box-shadow: 0 28px 40px -15px rgba(110, 70, 255, 0.5);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+    .space-card {
+      background: rgba(12, 18, 38, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 1.8rem;
+      border: 1px solid rgba(128, 100, 255, 0.4);
+      transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      transform-style: preserve-3d;
+    }
+    .space-card:hover {
+      transform: perspective(1000px) rotateX(2deg) rotateY(4deg) translateY(-8px);
+      border-color: #bfa5ff;
+      box-shadow: 0 30px 35px -15px rgba(90, 60, 210, 0.5);
+      background: rgba(20, 28, 55, 0.85);
+    }
+    .card-icon {
+      font-size: 2.6rem;
+      color: #c9b3ff;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+      background: linear-gradient(120deg, #f2efff, #cfbeff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 65%;
+      height: 3px;
+      background: linear-gradient(90deg, #b28eff, #673eff, transparent);
+    }
+    .github-block {
+      text-align: center;
+      background: rgba(10, 15, 35, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 2rem;
+      border: 1px solid rgba(110, 80, 255, 0.6);
+      transition: 0.3s;
+    }
+    .github-block:hover {
+      transform: translateZ(10px);
+      box-shadow: 0 20px 30px -10px #2a1f6e;
+    }
+    .social-links-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+      padding: 1rem 0;
+    }
+    .social-icon {
+      font-size: 1rem;
+      background: rgba(55, 45, 120, 0.6);
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      backdrop-filter: blur(8px);
+      transition: 0.25s;
+      border: 1px solid #8a6eff;
+    }
+    .social-icon a {
+      color: #ebe5ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .social-icon:hover {
+      transform: translateY(-5px);
+      background: #5b44dd70;
+      border-color: #c4abff;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.8rem;
+      color: #9aa2cf;
+    }
+
+    /* Client Chronicles Section */
+    .client-chronicles {
+      margin: 4rem 0 2rem;
+      position: relative;
+    }
+    .client-subhead {
+      text-align: center;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 2.5rem;
+      color: #b9c3ff;
+      border-left: 2px solid #a17eff;
+      border-right: 2px solid #a17eff;
+      display: inline-block;
+      width: auto;
+      padding: 0.5rem 1.8rem;
+      backdrop-filter: blur(4px);
+      border-radius: 60px;
+    }
+    .client-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.2rem;
+      margin-top: 1rem;
+    }
+    .testimonial-card {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s ease, box-shadow 0.3s;
+    }
+    .testimonial-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(125deg, #b27eff, #ff8cdd, #6f4eff);
+      border-radius: 2rem;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .testimonial-card:hover::before {
+      opacity: 0.6;
+    }
+    .client-avatar {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(145deg, #9f87ff, #6048cc);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      border: 2px solid #d8bcff;
+    }
+    .client-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f3ebff, #ccaaff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.2rem;
+    }
+    .client-role {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #bcb0f0;
+      margin-bottom: 1rem;
+    }
+    .project-story {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+      color: #e4e2ff;
+      border-left: 3px solid #9b75ff;
+      padding-left: 1rem;
+    }
+    .testimonial-quote {
+      font-style: italic;
+      background: rgba(70, 50, 150, 0.25);
+      padding: 0.9rem 1rem;
+      border-radius: 1.2rem;
+      margin-top: 1rem;
+      position: relative;
+    }
+    .testimonial-quote i {
+      color: #c9a9ff;
+      font-size: 1rem;
+      margin-right: 6px;
+    }
+    .quote-icon {
+      font-size: 1.6rem;
+      opacity: 0.4;
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+    }
+    .client-badge-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255,215,150,0.12);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      margin-top: 0.8rem;
+      backdrop-filter: blur(5px);
+    }
+    @media (max-width: 800px) {
+      .hero { flex-direction: column-reverse; text-align: center; }
+      .hero-content h1 { font-size: 2.8rem; }
+      .container { padding: 0 1.2rem; }
+      .profile-frame { width: 220px; height: 220px; }
+      .section-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="space-bg-layer"></div>
+<div class="stars-bg"></div>
+<div class="nebula-glow"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+
+<canvas id="three-canvas"></canvas>
+
+<div class="container">
+  <nav class="navbar">
+    <div class="logo">✦ HANDSOME ROBOT</div>
+    <div class="nav-links">
+      <a href="#home">ORBIT</a>
+      <a href="#about">STELLAR</a>
+      <a href="#android-apps">PLAY VERSE</a>
+      <a href="#web-projects">WEB GALAXY</a>
+      <a href="#client-chronicles">CLIENTS</a>
+      <a href="#github-zone">GITHUB</a>
+    </div>
+  </nav>
+
+  <section id="home">
+    <div class="hero">
+      <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-cube"></i> Government Certified | Android & Web</div>
+        <h1>Md Alamin Joy</h1>
+        <p><i class="fas fa-graduation-cap"></i> BSc in CSE · National University (2024)<br>
+        <i class="fas fa-certificate"></i> Gov Certified Android & Web Developer<br>
+        <i class="fas fa-rocket"></i> 3x Live Play Store Apps | Web Projects</p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="https://play.google.com/store/apps/developer?id=Handsome+Robot" target="_blank" class="btn btn-primary"><i class="fab fa-google-play"></i> Explore Apps</a>
+          <a href="#web-projects" class="btn btn-outline-light" style="border:1px solid #aa8eff;"><i class="fas fa-globe"></i> Web Dimensions</a>
+        </div>
+      </div>
+
+     <div class="hero-image" id="tilt-avatar">
+  <div class="profile-frame" id="avatar3d">
+    <img src="vv.jpg" alt="Md Alamin Joy - portrait" 
+         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 200 200\'%3E%3Cdefs%3E%3ClinearGradient id=\'grad\' x1=\'0%25\' y1=\'0%25\' x2=\'100%25\' y2=\'100%25\'%3E%3Cstop offset=\'0%25\' stop-color=\'%238a6eff\'/%3E%3Cstop offset=\'100%25\' stop-color=\'%23c05aff\'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=\'200\' height=\'200\' fill=\'url(%23grad)\'/%3E%3Ctext x=\'50%25\' y=\'45%25\' font-size=\'60\' fill=\'white\' text-anchor=\'middle\' dy=\'.3em\' font-family=\'Arial, sans-serif\'%3E🤖%3C/text%3E%3Ctext x=\'50%25\' y=\'70%25\' font-size=\'20\' fill=\'white\' text-anchor=\'middle\' font-family=\'Inter, sans-serif\'%3EHandsome Robot%3C/text%3E%3C/svg%3E';">
+  </div>
+
+  <p style="margin-top: 0.8rem; text-align: center;">
+    Blue White Star
+  </p>
+</div>
+</section>
+
+  <section id="about">
+    <h2 class="section-title">✦ Stellar Core</h2>
+    <div class="space-card" style="max-width: 95%;">
+      <div class="card-icon"><i class="fas fa-user-astronaut"></i></div>
+      <h3>Orbital Engineer</h3>
+<p>
+  <strong>Md Alamin Joy</strong> — Computer Science & Engineering student at National University of Bangladesh.  
+  Government-certified Android and Web Developer. I build high-performance mobile experiences and modern web applications.  
+  Published 3 apps on the Google Play Store and enjoy merging code with creative, futuristic design.
+</p>
+     <p>
+  <i class="fas fa-code"></i> 
+  <strong>Expertise:</strong> Kotlin, JavaScript, Firebase, SQLite, Room Database, MySQL, OpenCV, Android Development, Web Development, C, C++, HTML, CSS, GitHub.
+</p>
+      <div><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh  |  <i class="fas fa-saturn"></i> Open for interstellar collabs</div>
+    </div>
+  </section>
+
+  <section id="android-apps">
+    <h2 class="section-title"><i class="fab fa-google-play"></i> 3 Play Store Apps</h2>
+    <div class="cards-grid">
+      <!-- Biyar Khata -->
+      <div class="space-card">
+        <div class="card-icon"><i class="fab fa-android"></i> 📓</div>
+        <h3>Biyar Khata</h3>
+        <p>Smart wedding expense manager & checklist. Elegant UI, real-time budget tracking. Perfect for Bengali weddings.</p>
+        <div><a href="https://play.google.com/store/apps/details?id=com.handsomerobot.biyarkhata" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fab fa-google-play"></i> Play Store</a></div>
+      </div>
+      <!-- Jhunjuni -->
+      <div class="space-card">
+        <div class="card-icon"><i class="fas fa-heartbeat"></i> 🎶</div>
+        <h3>Jhunjuni</h3>
+        <p>Interactive musical fun app with games & entertainment. Loved by kids and adults alike.</p>
+        <div><a href="https://play.google.com/store/apps/details?id=com.handsomerobot.jhunjuni" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fab fa-google-play"></i> Play Store</a></div>
+      </div>
+      <!-- Coin Flip -->
+      <div class="space-card">
+        <div class="card-icon"><i class="fas fa-cloud-moon"></i> 🪙</div>
+        <h3>Coin Flip</h3>
+        <p>Realistic coin toss with 3D animations, decision helper, stats tracker.</p>
+        <div><a href="https://play.google.com/store/apps/details?id=com.handsomerobot.coinflip" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fab fa-google-play"></i> Play Store</a></div>
+      </div>
+    </div>
+    <div style="margin-top: 1rem; text-align: center; background: rgba(70,50,150,0.2); border-radius: 40px; padding: 0.5rem;"><i class="fas fa-star"></i> Live on Play Store — Handsome Robot Developer Profile</div>
+  </section>
+
+  <section id="web-projects">
+    <h2 class="section-title"><i class="fas fa-globe"></i> 3 Published Web Projects</h2>
+    <div class="cards-grid">
+      <!-- Result Processing System (Client Project) -->
+      <div class="space-card">
+        <div class="card-icon"><i class="fas fa-laptop-code"></i> 📊</div>
+        <h3>Result Processing System</h3>
+        <p>JavaScript application for managing student results, grade calculation, and analytics dashboard using only a font-end interface and a local database.</p>
+        <div><a href="https://github.com/handsomerobot1/result-possessing-system-javascript" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fas fa-external-link-alt"></i> Live Demo</a> <a href="https://github.com/handsomerobot1/result-possessing-system-javascript" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fab fa-github"></i> Repo</a></div>
+      </div>
+      <!-- Hospital Management System -->
+      <div class="space-card">
+        <div class="card-icon"><i class="fas fa-store"></i> 🏥</div>
+        <h3>Hospital Management System</h3>
+      <p>Frontend application for managing patient records, appointments, billing, and an admin panel using a local database.</p>
+        <div><a href="https://github.com/handsomerobot1/Hospital-management-system" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fas fa-external-link-alt"></i> Live Demo</a> <a href="https://github.com/handsomerobot1/Hospital-management-system" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fab fa-github"></i> Repo</a></div>
+      </div>
+      <!-- Cosmic Portfolio 3D (GitHub Profile highlight) -->
+      <div class="space-card">
+        <div class="card-icon"><i class="fas fa-chart-line"></i> 🪐</div>
+        <h3>Handsome Robot Labs</h3>
+        <p>Explore all open-source projects, Android libraries, and experimental webGL demos.</p>
+        <div><a href="https://github.com/handsomerobot1" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fab fa-github"></i> GitHub Profile</a> <a href="https://github.com/handsomerobot1" target="_blank" class="btn-outline-light" style="text-decoration: none;"><i class="fas fa-star"></i> Repositories</a></div>
+      </div>
+    </div>
+    <div style="margin-top: 0.8rem; text-align: center;"><i class="fas fa-satellite-dish"></i> Production-ready systems & open source contributions</div>
+  </section>
+
+  <!-- Client Chronicles Section (Real-world client stories without raw numbers) -->
+  <section id="client-chronicles" class="client-chronicles">
+    <div style="text-align: center;">
+      <h2 class="section-title">⟡ Client Chronicles</h2>
+      <div class="client-subhead">Real collaborations · genuine impact · beyond metrics</div>
+    </div>
+    <div class="client-showcase-grid">
+      
+      <!-- Client 1: EduNova Solutions (Result Processing System) -->
+      <div class="space-card testimonial-card">
+  <div class="client-badge-icon">
+    <i class="fas fa-check-circle"></i> 1+ Client Project Done
+  </div>
+</div>
+     
+    </div>
+  </section>
+
+  <section id="github-zone">
+    <div class="github-block">
+      <i class="fab fa-github" style="font-size: 3rem; color:#cbbaff;"></i>
+      <h3 style="margin: 0.8rem 0;">GitHub Nebula</h3>
+      <p>Open-source Android libraries, result processing system, hospital management, and 50+ repos crafted.</p>
+      <a href="https://github.com/handsomerobot1" class="btn btn-primary" target="_blank"><i class="fab fa-github"></i> github.com/handsomerobot1</a>
+    </div>
+
+    <div class="social-links-row">
+      <div class="social-icon">
+        <a href="https://www.youtube.com/@HandsomeRobot" target="_blank"><i class="fab fa-youtube"></i> YouTube </a>
+      </div>
+      <div class="social-icon">
+        <a href="https://www.linkedin.com/in/handsomerobot31/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+      </div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 1rem 0 0.5rem;">
+  
+    </div>
+  </section>
+
+  <div style="text-align: center; margin-top: 0.5rem; border-top: 1px dashed rgba(170,140,255,0.3); padding-top: 1rem;">
+
+  </div>
+  <footer>
+    <p>© 2026 Md Alamin Joy | alaminjoy456@gmail.com</p>
+  </footer>
+</div>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+
+  const canvas = document.getElementById('three-canvas');
+  const scene = new THREE.Scene();
+  scene.background = null;
+  scene.fog = new THREE.FogExp2(0x02040c, 0.004);
+
+  const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 1.2, 13);
+  
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setClearColor(0x000000, 0);
+
+  const ambient = new THREE.AmbientLight(0x231c5a);
+  scene.add(ambient);
+  const dirLight = new THREE.DirectionalLight(0xffecb3, 1.2);
+  dirLight.position.set(3, 5, 2);
+  scene.add(dirLight);
+  const backPurple = new THREE.PointLight(0xac6eff, 0.6);
+  backPurple.position.set(-2, 1, -5);
+  scene.add(backPurple);
+  const pinkFill = new THREE.PointLight(0xff60c0, 0.45);
+  pinkFill.position.set(4, 2, 3);
+  scene.add(pinkFill);
+  
+  const knotGeo = new THREE.TorusKnotGeometry(1.45, 0.34, 220, 36, 3, 4);
+  const knotMat = new THREE.MeshStandardMaterial({ color: 0xaa7eff, emissive: 0x4c2e9e, emissiveIntensity: 0.75, metalness: 0.9, roughness: 0.2 });
+  const knot = new THREE.Mesh(knotGeo, knotMat);
+  knot.position.y = -0.4;
+  scene.add(knot);
+  
+  const outerRing = new THREE.Mesh(
+    new THREE.TorusGeometry(1.78, 0.07, 100, 200),
+    new THREE.MeshStandardMaterial({ color: 0xd29eff, emissive: 0x7e52ff, emissiveIntensity: 0.65 })
+  );
+  outerRing.position.y = -0.4;
+  scene.add(outerRing);
+  
+  const starParticleCount = 2200;
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = [];
+  for (let i = 0; i < starParticleCount; i++) {
+    const r = 12 + Math.random() * 18;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    starPos.push(r * Math.sin(phi) * Math.cos(theta));
+    starPos.push(r * Math.sin(phi) * Math.sin(theta) * 0.7);
+    starPos.push(r * Math.cos(phi) * 1.1);
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+  const starPointsMat = new THREE.PointsMaterial({ color: 0xcbb5ff, size: 0.07, transparent: true, blending: THREE.AdditiveBlending });
+  const starField3D = new THREE.Points(starGeo, starPointsMat);
+  scene.add(starField3D);
+  
+  const dustCount = 1200;
+  const dustGeo = new THREE.BufferGeometry();
+  const dustPositions = [];
+  for (let i = 0; i < dustCount; i++) {
+    const radius = 2.1 + Math.random() * 1.3;
+    const angle = Math.random() * Math.PI * 2;
+    const yOff = (Math.random() - 0.5) * 1.8;
+    dustPositions.push(Math.cos(angle) * radius, yOff, Math.sin(angle) * radius);
+  }
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(dustPositions), 3));
+  const dustMatGlow = new THREE.PointsMaterial({ color: 0xffb380, size: 0.025, blending: THREE.AdditiveBlending });
+  const dustRing3D = new THREE.Points(dustGeo, dustMatGlow);
+  scene.add(dustRing3D);
+  
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+  });
+  
+  let time = 0;
+  function animate3D() {
+    requestAnimationFrame(animate3D);
+    time += 0.009;
+    knot.rotation.x += 0.005;
+    knot.rotation.y += 0.008;
+    knot.rotation.z += 0.003;
+    outerRing.rotation.x += 0.003;
+    outerRing.rotation.z += 0.004;
+    outerRing.rotation.y += 0.006;
+    starField3D.rotation.y = time * 0.03;
+    dustRing3D.rotation.y += 0.008;
+    dustRing3D.rotation.x = Math.sin(time * 0.6) * 0.15;
+    
+    camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.04;
+    camera.position.y += (-mouseY * 0.25 - camera.position.y) * 0.04;
+    camera.lookAt(0, -0.2, 0);
+    renderer.render(scene, camera);
+  }
+  animate3D();
+  
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+  
+  const avatarFrame = document.getElementById('avatar3d');
+  const avatarContainer = document.getElementById('tilt-avatar');
+  if (avatarContainer && avatarFrame) {
+    avatarContainer.addEventListener('mousemove', (e) => {
+      const rect = avatarContainer.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      avatarFrame.style.transform = `perspective(700px) rotateY(${x * 16}deg) rotateX(${y * -16}deg) translateZ(6px)`;
+    });
+    avatarContainer.addEventListener('mouseleave', () => {
+      avatarFrame.style.transform = '';
+    });
+  }
+  
+  document.querySelectorAll('.space-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const xAxis = (e.clientX - rect.left - rect.width/2) / 28;
+      const yAxis = (e.clientY - rect.top - rect.height/2) / 28;
+      card.style.transform = `perspective(1200px) rotateY(${xAxis}deg) rotateX(${-yAxis}deg) translateY(-6px) scale(1.01)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+  
+  console.log("✅ Cosmic Forge active — real client projects, Play Store apps, and GitHub repos integrated.");
+</script>
+</body>
+</html>
